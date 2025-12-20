@@ -1,4 +1,4 @@
-package myy803.traineeship_app.controllers.searchstrategies;
+package myy803.traineeship_app.services.positionsearch;
 
 import java.util.List;
 

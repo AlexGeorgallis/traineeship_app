@@ -16,6 +16,7 @@ import myy803.traineeship_app.mappers.CompanyMapper;
 import myy803.traineeship_app.mappers.ProfessorMapper;
 import myy803.traineeship_app.mappers.StudentMapper;
 import myy803.traineeship_app.mappers.UserMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -37,15 +38,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	CompanyMapper companyMapper;	
 	
 	@Override
+	@Transactional
 	public void saveUser(User user) {
 		String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userMapper.save(user);	
         
         switch(user.getRole()) {
-        case STUDENT:
-        	studentMapper.save(new Student(user.getUsername(), "", "", 0, "", "", "", true, null));
-        	break;
+			case STUDENT:
+				Student student = new Student(user.getUsername());
+				student.setLookingForTraineeship(true);
+				studentMapper.save(student);
+			break;
         case COMPANY:
         	companyMapper.save(new Company(user.getUsername(), "", null, null)); 
         	break;
@@ -72,4 +76,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public User findById(String username) {
 		return userMapper.findByUsername(username);
 	}
+
 }

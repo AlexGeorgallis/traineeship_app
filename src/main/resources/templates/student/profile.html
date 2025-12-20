@@ -26,15 +26,17 @@
 			
 			<label for="html">Full Name</label>
 			<input type="text" th:field="*{studentName}"
-					class="form-control mb-4 col-4" > 
-		
-			<label for="html">AM</label>
-			<input type="text" th:field="*{AM}"
 					class="form-control mb-4 col-4" >
 
+			<label for="am">AM</label>
+			<input type="text"
+				   id="am"
+				   th:field="*{AM}"
+				   class="form-control mb-4 col-4" />
+
+
 			<label for="html">Average Grade</label>
-			<input type="text" th:field="*{avgGrade}"
-					class="form-control mb-4 col-4">
+			<p class="form-control-plaintext" th:text="${student.avgGrade}">—</p>
 
 			<label for="html">Preferred Location</label>
 			<input type="text" th:field="*{preferredLocation}"
@@ -61,13 +63,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-

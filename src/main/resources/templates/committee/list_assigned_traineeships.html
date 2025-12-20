@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossorigin="anonymous">
+
+    <title>Assigned Traineeships</title>
+</head>
+<body>
+
+<div class="container">
+    <h3>Assigned / In-Progress Traineeships</h3>
+    <hr>
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>Position Id</th>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Student</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Topics</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="pos : ${positions}">
+            <td th:text="${pos.id}"></td>
+            <td th:text="${pos.title}"></td>
+            <td th:text="${pos.company != null ? pos.company.companyName : '—'}"></td>
+            <td th:text="${pos.student != null ? pos.student.studentName : '—'}"></td>
+            <td th:text="${pos.fromDate}"></td>
+            <td th:text="${pos.toDate}"></td>
+            <td th:text="${pos.topics}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/committee/dashboard}">Back to Committee Dashboard</a>
+</div>
+
+</body>
+</html>

@@ -12,7 +12,7 @@ public class Student {
 	@Column(name="student_name")
 	private String studentName;
 	
-	@Column(name="AM")
+	@Column(name="AM", unique = true)
 	private String AM;
 	
 	@Column(name="average_grade")
