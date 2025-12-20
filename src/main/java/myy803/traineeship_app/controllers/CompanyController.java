@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import myy803.traineeship_app.domain.Company;
 import myy803.traineeship_app.domain.TraineeshipPosition;
 import myy803.traineeship_app.mappers.CompanyMapper;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class CompanyController {
@@ -64,7 +66,27 @@ public class CompanyController {
         return "redirect:/company/dashboard";
     }
 
+    // US9
+    @RequestMapping("/company/list_assigned_positions")
+    public String listAssignedPositions(Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("positions", companyService.getAssignedPositions(username));
+        return "company/assigned_positions";
+    }
 
+    // US11
+    @RequestMapping("/company/delete_position")
+    public String deletePosition(@RequestParam("positionId") Integer positionId,
+                                 RedirectAttributes redirectAttributes) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            companyService.deletePosition(username, positionId);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/company/list_available_positions";
+    }
 
 }
 

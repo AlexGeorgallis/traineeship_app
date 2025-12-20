@@ -3,18 +3,22 @@ package myy803.traineeship_app.service;
 import myy803.traineeship_app.domain.Company;
 import myy803.traineeship_app.domain.TraineeshipPosition;
 import myy803.traineeship_app.mappers.CompanyMapper;
+import myy803.traineeship_app.mappers.TraineeshipPositionsMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyMapper companyMapper;
+    private final TraineeshipPositionsMapper traineeshipPositionsMapper;
 
-    public CompanyServiceImpl(CompanyMapper companyMapper) {
+    public CompanyServiceImpl(CompanyMapper companyMapper, TraineeshipPositionsMapper traineeshipPositionsMapper) {
         this.companyMapper = companyMapper;
+        this.traineeshipPositionsMapper = traineeshipPositionsMapper;
     }
 
     @Override
@@ -61,4 +65,38 @@ public class CompanyServiceImpl implements CompanyService {
 
         companyMapper.save(company);
     }
+
+    // US9
+    @Override
+    public List<TraineeshipPosition> getAssignedPositions(String username) {
+        Company company = companyMapper.findByUsername(username);
+        return (company != null) ? company.getAssignedPositions() : List.of();
+    }
+
+    // US11
+    @Override
+    @Transactional
+    public void deletePosition(String username, Integer positionId) {
+        TraineeshipPosition position =
+                traineeshipPositionsMapper.findById(positionId)
+                        .orElseThrow(() -> new IllegalArgumentException("Position not found"));
+
+        if (position.getCompany() == null ||
+                !username.equals(position.getCompany().getUsername())) {
+            throw new IllegalStateException("Cannot delete position that does not belong to current company");
+        }
+
+        if (position.isAssigned()) {
+            throw new IllegalStateException("Cannot delete a position that is already assigned to a student");
+        }
+
+        Company company = position.getCompany();
+
+        if (company.getPositions() != null) {
+            company.getPositions().removeIf(p -> p.getId().equals(positionId));
+        }
+
+        traineeshipPositionsMapper.delete(position);
+    }
+
 }

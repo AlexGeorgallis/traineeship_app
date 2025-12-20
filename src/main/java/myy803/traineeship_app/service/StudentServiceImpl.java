@@ -1,7 +1,9 @@
 package myy803.traineeship_app.service;
 
 import myy803.traineeship_app.domain.Student;
+import myy803.traineeship_app.domain.TraineeshipPosition;
 import myy803.traineeship_app.mappers.StudentMapper;
+import myy803.traineeship_app.mappers.TraineeshipPositionsMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentMapper studentMapper;
+    private final TraineeshipPositionsMapper traineeshipPositionsMapper;
 
-    public StudentServiceImpl(StudentMapper studentMapper) {
+    public StudentServiceImpl(StudentMapper studentMapper, TraineeshipPositionsMapper traineeshipPositionsMapper) {
         this.studentMapper = studentMapper;
+        this.traineeshipPositionsMapper = traineeshipPositionsMapper;
     }
 
     @Override
@@ -35,5 +39,18 @@ public class StudentServiceImpl implements StudentService {
         dbStudent.setLookingForTraineeship(true);
 
         studentMapper.save(dbStudent);
+    }
+
+    @Override
+    @Transactional
+    public void updateLogbook(String username, String logText) {
+        Student student = studentMapper.findByUsername(username);
+        if (student == null || student.getAssignedTraineeship() == null) {
+            throw new IllegalStateException("Student has no assigned traineeship");
+        }
+
+        TraineeshipPosition position = student.getAssignedTraineeship();
+        position.setStudentLogbook(logText);
+        traineeshipPositionsMapper.save(position);
     }
 }

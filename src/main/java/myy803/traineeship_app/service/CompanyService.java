@@ -14,5 +14,11 @@ public interface CompanyService {
     List<TraineeshipPosition> getAvailablePositions(String username);
 
     void savePositionForCompany(String username, TraineeshipPosition position);
+
+    // US9
+    List<TraineeshipPosition> getAssignedPositions(String username);
+
+    // US11
+    void deletePosition(String username, Integer positionId);
 }
 

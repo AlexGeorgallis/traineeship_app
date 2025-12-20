@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossorigin="anonymous">
+
+    <title>Traineeship Logbook</title>
+</head>
+
+<body>
+<div class="container">
+    <h3>Traineeship Logbook</h3>
+    <hr>
+
+    <div th:if="${!hasAssigned}">
+        <p>You do not have an assigned traineeship yet.</p>
+        <a th:href="@{/student/dashboard}">Back to Student Dashboard</a>
+    </div>
+
+    <div th:if="${hasAssigned}">
+        <form th:action="@{/student/save_logbook}" method="POST">
+            <div class="form-group">
+                <label for="logText">Logbook entries</label>
+                <textarea id="logText"
+                          name="logText"
+                          class="form-control"
+                          rows="10"
+                          th:text="${logText}"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-info">Save</button>
+            <a th:href="@{/student/dashboard}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
