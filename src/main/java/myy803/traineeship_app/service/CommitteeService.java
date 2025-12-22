@@ -45,7 +45,6 @@ public class CommitteeService {
             throw new IllegalStateException("Position already assigned");
         }
 
-        // business state change
         position.setAssigned(true);
         position.setStudent(student);
 
@@ -54,5 +53,21 @@ public class CommitteeService {
 
         positionsMapper.save(position);
     }
+
+    // US21
+    public TraineeshipPosition getPositionById(Integer positionId) {
+        return positionsMapper.findById(positionId)
+                .orElseThrow(() -> new IllegalArgumentException("Position not found"));
+    }
+
+    @Transactional
+    public void completeTraineeship(Integer positionId, boolean pass) {
+        TraineeshipPosition position = getPositionById(positionId);
+
+        position.setPassFailGrade(pass);
+
+        positionsMapper.save(position);
+    }
+
 }
 

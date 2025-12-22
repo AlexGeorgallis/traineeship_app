@@ -1,51 +1,63 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
           crossorigin="anonymous">
 
     <title>Assigned Traineeships</title>
 </head>
-<body>
 
+<body>
 <div class="container">
-    <h3>Assigned / In-Progress Traineeships</h3>
+
+    <h3>Assigned Traineeships</h3>
     <hr>
+
+    <div th:if="${message}">
+        <div class="alert alert-success" th:text="${message}"></div>
+    </div>
+    <div th:if="${error}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
 
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
         <tr>
             <th>Position Id</th>
             <th>Title</th>
-            <th>Company</th>
+            <th>Description</th>
+            <th>From Date</th>
+            <th>To Date</th>
             <th>Student</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Topics</th>
+            <th>Company</th>
+            <th>Actions</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="pos : ${positions}">
-            <td th:text="${pos.id}"></td>
-            <td th:text="${pos.title}"></td>
-            <td th:text="${pos.company != null ? pos.company.companyName : '—'}"></td>
-            <td th:text="${pos.student != null ? pos.student.studentName : '—'}"></td>
-            <td th:text="${pos.fromDate}"></td>
-            <td th:text="${pos.toDate}"></td>
-            <td th:text="${pos.topics}"></td>
+        <tr th:each="position : ${positions}">
+            <td th:text="${position.id}"></td>
+            <td th:text="${position.title}"></td>
+            <td th:text="${position.description}"></td>
+            <td th:text="${position.fromDate}"></td>
+            <td th:text="${position.toDate}"></td>
+            <td th:text="${position.student != null ? position.student.studentName : '—'}"></td>
+            <td th:text="${position.company != null ? position.company.companyName : '—'}"></td>
+            <td>
+                <a th:href="@{|/committee/view_traineeship?positionId=${position.id}|}"
+                   class="btn btn-sm btn-primary">
+                    View / Complete
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>
 
     <a th:href="@{/committee/dashboard}">Back to Committee Dashboard</a>
 </div>
-
 </body>
 </html>

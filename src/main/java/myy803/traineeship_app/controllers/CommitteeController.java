@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -70,9 +71,52 @@ public class CommitteeController {
     @RequestMapping("/committee/assign_supervisor")
     public String assignSupervisor(
             @RequestParam("selected_position_id") Integer positionId,
-            @RequestParam("strategy") String strategy) {
+            @RequestParam("strategy") String strategy,
+            RedirectAttributes redirectAttributes) {
 
-        supervisorAssignmentService.assign(strategy, positionId);
-        return "committee/dashboard";
+        try {
+            supervisorAssignmentService.assign(strategy, positionId);
+            redirectAttributes.addFlashAttribute(
+                    "message",
+                    "Supervisor assigned successfully for traineeship " + positionId
+            );
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/committee/list_assigned_traineeships";
+    }
+
+    // US21
+    @RequestMapping("/committee/view_traineeship")
+    public String viewTraineeship(
+            @RequestParam("positionId") Integer positionId,
+            Model model) {
+
+        TraineeshipPosition position = committeeService.getPositionById(positionId);
+
+        model.addAttribute("position", position);
+        model.addAttribute("evaluations", position.getEvaluations());
+
+        return "committee/traineeship_details";
+    }
+
+    // === US21: complete with pass/fail ===
+    @RequestMapping("/committee/complete_traineeship")
+    public String completeTraineeship(
+            @RequestParam("positionId") Integer positionId,
+            @RequestParam("decision") String decision,
+            RedirectAttributes redirectAttributes) {
+
+        boolean pass = "PASS".equalsIgnoreCase(decision);
+
+        committeeService.completeTraineeship(positionId, pass);
+
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Traineeship " + positionId + " completed with final grade: " + (pass ? "PASS" : "FAIL")
+        );
+
+        return "redirect:/committee/list_assigned_traineeships";
     }
 }

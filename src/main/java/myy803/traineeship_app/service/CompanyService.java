@@ -1,6 +1,7 @@
 package myy803.traineeship_app.service;
 
 import myy803.traineeship_app.domain.Company;
+import myy803.traineeship_app.domain.Evaluation;
 import myy803.traineeship_app.domain.TraineeshipPosition;
 
 import java.util.List;
@@ -20,5 +21,9 @@ public interface CompanyService {
 
     // US11
     void deletePosition(String username, Integer positionId);
+
+    // US12
+    void createCompanyEvaluation(String username, Integer positionId, Evaluation evaluation);
+
 }
 

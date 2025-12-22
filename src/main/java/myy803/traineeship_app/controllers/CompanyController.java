@@ -2,6 +2,7 @@ package myy803.traineeship_app.controllers;
 
 import java.util.List;
 
+import myy803.traineeship_app.domain.Evaluation;
 import myy803.traineeship_app.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -86,6 +87,30 @@ public class CompanyController {
         }
 
         return "redirect:/company/list_available_positions";
+    }
+
+    // US12
+    @RequestMapping("/company/evaluate_position")
+    public String showEvaluationForm(@RequestParam("positionId") Integer positionId,
+                                     Model model) {
+        // we just need the ID for now; service will validate ownership
+        model.addAttribute("positionId", positionId);
+        model.addAttribute("evaluation", new Evaluation());
+        return "company/evaluation_form";
+    }
+
+    @RequestMapping("/company/save_evaluation")
+    public String saveEvaluation(@RequestParam("positionId") Integer positionId,
+                                 @ModelAttribute("evaluation") Evaluation evaluation,
+                                 RedirectAttributes redirectAttributes) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            companyService.createCompanyEvaluation(username, positionId, evaluation);
+            redirectAttributes.addFlashAttribute("message", "Evaluation saved successfully.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/company/list_assigned_positions";
     }
 
 }

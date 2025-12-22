@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+
+    <title>Traineeship Details</title>
+</head>
+
+<body>
+<div class="container">
+
+    <h3>Traineeship Details</h3>
+    <hr>
+
+    <h5>Basic Information</h5>
+    <table class="table table-sm table-bordered">
+        <tr>
+            <th>Position Id</th>
+            <td th:text="${position.id}"></td>
+        </tr>
+        <tr>
+            <th>Title</th>
+            <td th:text="${position.title}"></td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td th:text="${position.description}"></td>
+        </tr>
+        <tr>
+            <th>Dates</th>
+            <td>
+                <span th:text="${position.fromDate}"></span>
+                &nbsp;-&nbsp;
+                <span th:text="${position.toDate}"></span>
+            </td>
+        </tr>
+        <tr>
+            <th>Student</th>
+            <td th:text="${position.student != null ? position.student.studentName : '—'}"></td>
+        </tr>
+        <tr>
+            <th>Company</th>
+            <td th:text="${position.company != null ? position.company.companyName : '—'}"></td>
+        </tr>
+        <tr>
+            <th>Logbook</th>
+            <td th:text="${position.studentLogbook != null ? position.studentLogbook : 'No entries yet'}"></td>
+        </tr>
+        <tr>
+            <th>Current Final Grade</th>
+            <td>
+                <span th:text="${position.passFailGrade} ? 'PASS' : 'FAIL'"></span>
+            </td>
+        </tr>
+    </table>
+
+    <h5>Evaluations</h5>
+    <div th:if="${evaluations == null or #lists.isEmpty(evaluations)}">
+        <p>No evaluations have been submitted yet.</p>
+    </div>
+    <div th:unless="${evaluations == null or #lists.isEmpty(evaluations)}">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th>Type</th>
+                <th>Motivation</th>
+                <th>Efficiency</th>
+                <th>Effectiveness</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ev : ${evaluations}">
+                <td th:text="${ev.evaluationType}"></td>
+                <td th:text="${ev.motivation}"></td>
+                <td th:text="${ev.efficiency}"></td>
+                <td th:text="${ev.effectiveness}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <h5>Complete Traineeship</h5>
+    <form th:action="@{/committee/complete_traineeship}" method="post">
+        <input type="hidden" name="positionId" th:value="${position.id}"/>
+
+        <div class="form-group">
+            <label for="decision">Final Decision</label>
+            <select id="decision" name="decision" class="form-control">
+                <option value="PASS">Pass</option>
+                <option value="FAIL">Fail</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Final Grade</button>
+        <a th:href="@{/committee/list_assigned_traineeships}" class="btn btn-secondary">Back</a>
+    </form>
+
+</div>
+</body>
+</html>

@@ -27,7 +27,7 @@
             <th>From Date</th>
             <th>To Date</th>
             <th>Student</th>
-            <th>Company</th>
+            <th>Actions</th>
         </tr>
         </thead>
 
@@ -39,7 +39,12 @@
             <td th:text="${position.fromDate}"></td>
             <td th:text="${position.toDate}"></td>
             <td th:text="${position.student != null ? position.student.studentName : '—'}"></td>
-            <td th:text="${position.company != null ? position.company.companyName : '—'}"></td>
+            <td>
+                <a th:href="@{|/professor/evaluate_position?positionId=${position.id}|}"
+                   class="btn btn-sm btn-primary">
+                    Evaluate
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

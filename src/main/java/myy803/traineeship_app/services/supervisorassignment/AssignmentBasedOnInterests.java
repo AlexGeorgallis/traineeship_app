@@ -26,7 +26,7 @@ public class AssignmentBasedOnInterests extends AbstractSupervisorAssignmentTemp
 		Professor candidate = null;
 
 		for (Professor p : professors) {
-			if (p.match(topics)) candidate = p; // your original behavior
+			if (p.match(topics)) candidate = p;
 		}
 		return (candidate != null) ? candidate : professors.get(0);
 	}

@@ -1,12 +1,15 @@
 package myy803.traineeship_app.service;
 
 import myy803.traineeship_app.domain.Company;
+import myy803.traineeship_app.domain.Evaluation;
+import myy803.traineeship_app.domain.EvaluationType;
 import myy803.traineeship_app.domain.TraineeshipPosition;
 import myy803.traineeship_app.mappers.CompanyMapper;
 import myy803.traineeship_app.mappers.TraineeshipPositionsMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +100,38 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         traineeshipPositionsMapper.delete(position);
+    }
+
+    @Override
+    @Transactional
+    public void createCompanyEvaluation(String username, Integer positionId, Evaluation formEvaluation) {
+        TraineeshipPosition position =
+                traineeshipPositionsMapper.findById(positionId)
+                        .orElseThrow(() -> new IllegalArgumentException("Position not found"));
+
+        Company company = position.getCompany();
+        if (company == null || !username.equals(company.getUsername())) {
+            throw new IllegalStateException("Cannot evaluate a position not owned by current company");
+        }
+
+        if (!position.isAssigned()) {
+            throw new IllegalStateException("Cannot evaluate a position that is not assigned to a student");
+        }
+
+        Evaluation eval = new Evaluation();
+        eval.setEvaluationType(EvaluationType.COMPANY_EVALUATION);
+        eval.setMotivation(formEvaluation.getMotivation());
+        eval.setEfficiency(formEvaluation.getEfficiency());
+        eval.setEffectiveness(formEvaluation.getEffectiveness());
+
+        List<Evaluation> evaluations = position.getEvaluations();
+        if (evaluations == null) {
+            evaluations = new ArrayList<>();
+            position.setEvaluations(evaluations);
+        }
+        evaluations.add(eval);
+
+        traineeshipPositionsMapper.save(position);
     }
 
 }

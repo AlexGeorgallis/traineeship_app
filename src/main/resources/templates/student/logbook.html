@@ -23,6 +23,24 @@
     </div>
 
     <div th:if="${hasAssigned}">
+
+        <h4 th:text="'Logbook — ' + ${position.title}"></h4>
+
+        <p>
+            <strong>Company:</strong>
+            <span th:text="${position.company != null ? position.company.companyName : '—'}"></span><br>
+
+            <strong>Supervisor:</strong>
+            <span th:text="${position.supervisor != null ? position.supervisor.professorName : '—'}"></span><br>
+
+            <strong>Duration:</strong>
+            <span th:text="${position.fromDate}"></span>
+            →
+            <span th:text="${position.toDate}"></span>
+        </p>
+
+        <hr>
+
         <form th:action="@{/student/save_logbook}" method="POST">
             <div class="form-group">
                 <label for="logText">Logbook entries</label>

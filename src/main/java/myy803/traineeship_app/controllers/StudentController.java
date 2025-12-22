@@ -52,6 +52,7 @@ public class StudentController {
 
         model.addAttribute("hasAssigned", hasAssigned);
         model.addAttribute("logText", logText);
+        model.addAttribute("position", hasAssigned ? position : null);
 
         return "student/logbook";
     }

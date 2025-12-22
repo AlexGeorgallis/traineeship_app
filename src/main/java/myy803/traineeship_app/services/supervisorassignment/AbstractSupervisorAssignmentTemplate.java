@@ -22,12 +22,23 @@ public abstract class AbstractSupervisorAssignmentTemplate implements Supervisor
     @Override
     @Transactional
     public void assign(Integer positionId) {
-        TraineeshipPosition position = positionsMapper.findById(positionId).orElseThrow();
+        TraineeshipPosition position = positionsMapper.findById(positionId)
+                .orElseThrow(() -> new IllegalArgumentException("Position not found: " + positionId));
+
+        // don't allow re-assign
+        if (position.getSupervisor() != null) {
+            throw new IllegalStateException("Supervisor already assigned for this traineeship.");
+        }
+
         List<Professor> professors = professorMapper.findAll();
-        if (professors.isEmpty()) return;
+        if (professors.isEmpty()) {
+            throw new IllegalStateException("No professors available to assign as supervisor.");
+        }
 
         Professor supervisor = chooseSupervisor(position, professors);
-        if (supervisor == null) return;
+        if (supervisor == null) {
+            throw new IllegalStateException("No suitable supervisor found for this traineeship.");
+        }
 
         position.setSupervisor(supervisor);
         supervisor.addPosition(position);
