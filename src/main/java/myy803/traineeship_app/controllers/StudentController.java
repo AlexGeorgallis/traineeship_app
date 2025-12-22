@@ -39,20 +39,27 @@ public class StudentController {
 
     @RequestMapping("/student/logbook")
     public String showLogbookForm(Model model) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Student student = studentService.getOrCreateByUsername(username);
+        String username =
+                SecurityContextHolder.getContext().getAuthentication().getName();
 
+        Student student = studentService.getOrCreateByUsername(username);
         TraineeshipPosition position = student.getAssignedTraineeship();
+
         boolean hasAssigned = (position != null);
 
         String logText = "";
-        if (hasAssigned && position.getStudentLogbook() != null) {
-            logText = position.getStudentLogbook();
+        if (hasAssigned) {
+            String existing = position.getStudentLogbook();
+            if (existing != null) {
+                logText = existing;
+            }
         }
 
         model.addAttribute("hasAssigned", hasAssigned);
         model.addAttribute("logText", logText);
-        model.addAttribute("position", hasAssigned ? position : null);
+        model.addAttribute("position", position);
+        model.addAttribute("positionTitle",
+                hasAssigned ? position.getTitle() : null);
 
         return "student/logbook";
     }
