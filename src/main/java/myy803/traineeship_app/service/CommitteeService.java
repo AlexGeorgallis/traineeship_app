@@ -66,8 +66,27 @@ public class CommitteeService {
 
         position.setPassFailGrade(pass);
 
+        Student student = position.getStudent();
+        if (student != null) {
+
+            double traineeshipGrade = pass ? 10.0 : 0.0;
+
+            double currentAvg = student.getAvgGrade();
+
+            double newAvg;
+            if (currentAvg <= 0.0) {
+                newAvg = traineeshipGrade;
+            } else {
+                newAvg = (currentAvg + traineeshipGrade) / 2.0;
+            }
+
+            student.setAvgGrade(newAvg);
+            studentMapper.save(student);
+        }
+
         positionsMapper.save(position);
     }
+
 
 }
 
